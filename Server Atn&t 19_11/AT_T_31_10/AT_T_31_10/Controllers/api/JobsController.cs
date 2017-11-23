@@ -10,148 +10,217 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AT_T_31_10.Models;
+using AT_T_31_10.Utils;
 
 namespace AT_T_31_10.Controllers.api
 {
     public class JobsController : ApiController
     {
         private AT_T_31_10Context db = new AT_T_31_10Context();
+         private Security Auth = new Security();
 
         // GET: api/Jobs
-        public IEnumerable<object> GetJobs()
+        public IHttpActionResult  GetJobs()
         {
-           var Result= (
-           from jb in db.Jobs
-           select new
-           {
-               Id = jb.Id,
-               Title = jb.Title,
-               Position = jb.Position,
-               Description = jb.Description,
-               Published = jb.Published,
-               Active = jb.Active,
-               Experience = jb.Experience
-               ,
-               Skills =
-               from skl in db.Skillsets
-               .Where(SkSet => 
-               (db.JobSkillsets
-               .Where(JobSK => JobSK.JobId ==jb.Id)
-               .Select(jobskill=>jobskill.SkillId))
-               .Contains((int)SkSet.Id)
-               ) select skl
-               ,
-               Recruiters =
-               from manag in db.Managers
-                            .Where(man =>
-                            (db.JobRecruiters
-                            .Where(R => R.JobId == jb.Id)
-                            .Select(re => re.RecruiterId))
-                            .Contains(man.Id))
-                            select new
-                            {
-                                Id = manag.Id,
-                                Email = manag.Email,
-                                UserName = manag.UserName
-                            }
-           }).ToList();
+            try
+            {
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+                var Result = (
+from jb in db.Jobs
+select new
+{
+    Id = jb.Id,
+    Title = jb.Title,
+    Position = jb.Position,
+    Description = jb.Description,
+    Published = jb.Published,
+    Active = jb.Active,
+    Experience = jb.Experience
+    ,
+    Skills =
+    from skl in db.Skillsets
+    .Where(SkSet =>
+    (db.JobSkillsets
+    .Where(JobSK => JobSK.JobId == jb.Id)
+    .Select(jobskill => jobskill.SkillId))
+    .Contains((int)SkSet.Id)
+    )
+    select skl
+    ,
+    Recruiters =
+    from manag in db.Managers
+                 .Where(man =>
+                 (db.JobRecruiters
+                 .Where(R => R.JobId == jb.Id)
+                 .Select(re => re.RecruiterId))
+                 .Contains(man.Id))
+    select new
+    {
+        Id = manag.Id,
+        Email = manag.Email,
+        UserName = manag.UserName
+    }
+}).ToList();
 
 
-         
-    
+                return Ok(Result);
+            }
+            catch (Exception error)
+            {
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
+            }
 
-            
-
-
-            //var quer = from re in db.Managers
-            //           select new
-            //           {
-            //               Id = db.JobRecruiters.FirstOrDefault(R => R.JobId == jb.Id).Select(re => re.RecruiterId),
-            //           };
-
-            return Result;
         }
 
         // GET: api/Jobs/5
         [ResponseType(typeof(Job))]
         public async Task<IHttpActionResult> GetJob(int id)
         {
-            Job job = await db.Jobs.FindAsync(id);
-            if (job == null)
+            try
             {
-                return NotFound();
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+                Job job = await db.Jobs.FindAsync(id);
+                if (job == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(job);
+            }
+            catch (Exception error)
+            {
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
             }
 
-            return Ok(job);
+
+
         }
 
         // PUT: api/Jobs/5
         [HttpPut]
         public async Task<IHttpActionResult> PutJob(int id, Job job)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != job.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(job).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+                int CurrentUserId = Auth.GetId(head);
+
+                var JobRelation =db.JobRecruiters.Where(Jb => Jb.JobId == job.Id && Jb.RecruiterId == CurrentUserId);
+
+                if(JobRelation==null)
+                {
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized - Only The Job Manager Recruiter");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (id != job.Id)
+                {
+                    return BadRequest();
+                }
+
+                db.Entry(job).State = EntityState.Modified;
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!JobExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return StatusCode(HttpStatusCode.NoContent);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception error)
             {
-                if (!JobExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+
         }
 
         // POST: api/Jobs
         [HttpPost]
         public IHttpActionResult PostJob(Job job)
         {
-            if (!ModelState.IsValid)
+
+            try
             {
-                return BadRequest(ModelState);
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+                if (!Auth.IsAdmin(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                db.Jobs.Add(job);
+                CreatedAtRoute("DefaultApi", new { id = job.Id }, job);
+
+                db.SaveChanges();
+
+
+                return Ok(job.Id);
             }
-
-            db.Jobs.Add(job);
-            CreatedAtRoute("DefaultApi", new { id = job.Id }, job);
-
-            db.SaveChanges();
-
-
-            return Ok(job.Id);
+            catch (Exception error)
+            {
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
+            }
         }
 
-        // DELETE: api/Jobs/5
         [ResponseType(typeof(Job))]
         public async Task<IHttpActionResult> DeleteJob(int id)
         {
-            Job job = await db.Jobs.FindAsync(id);
-            if (job == null)
+
+            try
             {
-                return NotFound();
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+                if (!Auth.IsAdmin(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+
+                Job job = await db.Jobs.FindAsync(id);
+                if (job == null)
+                {
+                    return NotFound();
+                }
+
+                db.Jobs.Remove(job);
+                await db.SaveChangesAsync();
+                return Ok(job);
+
+            }
+            catch (Exception error)
+            {
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
             }
 
-            db.Jobs.Remove(job);
-            await db.SaveChangesAsync();
 
-            return Ok(job);
         }
 
         protected override void Dispose(bool disposing)

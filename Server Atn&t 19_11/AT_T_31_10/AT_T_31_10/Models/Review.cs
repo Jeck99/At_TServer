@@ -11,9 +11,7 @@ namespace AT_T_31_10.Models
         public int Id { get; set;}
         public int ApplicantId { get; set;}
         public int ManagerId { get; set; }
-        [Required]
         public string Status { get; set; }
-        [Required]
         public string Content { get; set;}
     }
 }

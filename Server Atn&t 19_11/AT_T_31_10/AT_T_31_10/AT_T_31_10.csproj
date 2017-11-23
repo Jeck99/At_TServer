@@ -256,6 +256,18 @@
     <Compile Include="Migrations\201711141909588_UrlTime.Designer.cs">
       <DependentUpon>201711141909588_UrlTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711211324033_please.cs" />
+    <Compile Include="Migrations\201711211324033_please.Designer.cs">
+      <DependentUpon>201711211324033_please.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711221404257_MatchPrecentage.cs" />
+    <Compile Include="Migrations\201711221404257_MatchPrecentage.Designer.cs">
+      <DependentUpon>201711221404257_MatchPrecentage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711221822298_WrongProperty.cs" />
+    <Compile Include="Migrations\201711221822298_WrongProperty.Designer.cs">
+      <DependentUpon>201711221822298_WrongProperty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Applicant.cs" />
     <Compile Include="Models\ApplicantRecruiters.cs" />
     <Compile Include="Models\JobRecruiter.cs" />
@@ -268,7 +280,9 @@
     <Compile Include="Models\Review.cs" />
     <Compile Include="Models\Skillset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\AdjustmentUtils.cs" />
     <Compile Include="Utils\Encryption.cs" />
+    <Compile Include="Utils\ExtendApplicant.cs" />
     <Compile Include="Utils\Security.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +402,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711141909588_UrlTime.resx">
       <DependentUpon>201711141909588_UrlTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711211324033_please.resx">
+      <DependentUpon>201711211324033_please.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711221404257_MatchPrecentage.resx">
+      <DependentUpon>201711221404257_MatchPrecentage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711221822298_WrongProperty.resx">
+      <DependentUpon>201711221822298_WrongProperty.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

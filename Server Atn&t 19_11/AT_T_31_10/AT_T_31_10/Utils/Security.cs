@@ -27,11 +27,8 @@ namespace AT_T_31_10.Utils
         {
             var Result = DataBase.ManagerLogins.FirstOrDefault(Loged => Loged.SessionId == head);
             if(Result == null)
-            {
                 return false;
-            }
             
-
                 return DataBase.Managers.FirstOrDefault(User => User.Id == Result.UserId).Role == "Admin";
         }
 
@@ -39,16 +36,14 @@ namespace AT_T_31_10.Utils
         {
             bool IsManagerLogged = DataBase.ManagerLogins.Any(Loged => Loged.SessionId == head);
             if (IsManagerLogged)
-            {
                 return true;
-            }
+            
             return false;
         }
 
-        public long GetId(string head)
+        public int GetId(string head)
         {
-            return DataBase.ManagerLogins.FirstOrDefault(Loged => Loged.SessionId == head).UserId;
-         
+            return DataBase.ManagerLogins.FirstOrDefault(Loged => Loged.SessionId == head).UserId;        
         }
 
         //internal bool AuthSecure(object head)

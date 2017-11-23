@@ -71,18 +71,21 @@ namespace AT_T_31_10.Controllers.api
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Reviews
-        [ResponseType(typeof(Review))]
-        public async Task<IHttpActionResult> PostReview(Review review)
+        [HttpPost]
+        public IHttpActionResult PostReview(Review review)
         {
-            if (!ModelState.IsValid)
+            var currentUser = db.Managers.FirstOrDefault(man => man.Id == review.ManagerId);
+            var applicantLocked = db.Applicants.FirstOrDefault(app => app.Id == review.ApplicantId);
+
+            if (currentUser == null || applicantLocked == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            db.Reviews.Add(review);
-            await db.SaveChangesAsync();
+            applicantLocked.LockedBy = currentUser.UserName;
 
+            db.Reviews.Add(review);
+            db.SaveChanges();
             return CreatedAtRoute("DefaultApi", new { id = review.Id }, review);
         }
 

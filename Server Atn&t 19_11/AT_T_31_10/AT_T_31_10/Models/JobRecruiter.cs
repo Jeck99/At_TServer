@@ -7,7 +7,7 @@ namespace AT_T_31_10.Models
 {
     public class JobRecruiter
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public int JobId { get; set; }
         public int RecruiterId { get; set;}
     }
