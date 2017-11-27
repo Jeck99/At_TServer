@@ -429,6 +429,7 @@ C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.pdb
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.MatchPrecentage.resources
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.WrongProperty.resources
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.DataPicker.resources
+<<<<<<< HEAD
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\bin\ApplicationInsights.config
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\bin\AT_T_31_10.dll.config
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\bin\AT_T_31_10.dll
@@ -553,3 +554,6 @@ C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\obj\Debug\AT_T_31_10.Migr
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\obj\Debug\AT_T_31_10.csproj.GenerateResource.Cache
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\obj\Debug\AT_T_31_10.dll
 C:\At_TServer\Server Atn&t 19_11\AT_T_31_10\AT_T_31_10\obj\Debug\AT_T_31_10.pdb
+=======
+C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.RemoveStatus.resources
+>>>>>>> 4ce9e0d93fc5c5919709496bf9a243b6b9a48cf5
