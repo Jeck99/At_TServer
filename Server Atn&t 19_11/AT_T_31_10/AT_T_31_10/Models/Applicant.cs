@@ -15,7 +15,6 @@ namespace AT_T_31_10.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Status { get; set;}
         public DateTime Date { get; set; }
         public string LockedBy { get; set; }
         public bool Active { get; set; }
