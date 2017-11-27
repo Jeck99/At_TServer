@@ -84,19 +84,34 @@ namespace AT_T_31_10.Controllers.api
         [HttpPost]
         public IHttpActionResult PostReview(Review review)
         {
-            var currentUser = db.Managers.FirstOrDefault(man => man.Id == review.ManagerId);
-            var applicantLocked = db.Applicants.FirstOrDefault(app => app.Id == review.ApplicantId);
-
-            if (currentUser == null || applicantLocked == null)
+            try
             {
-                return BadRequest();
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+                var currentUser = db.Managers.FirstOrDefault(man => man.Id == review.ManagerId);
+                var applicantLocked = db.Applicants.FirstOrDefault(app => app.Id == review.ApplicantId);
+
+                if (currentUser == null || applicantLocked == null)
+                {
+                    return BadRequest();
+                }
+
+                applicantLocked.LockedBy = currentUser.UserName;
+
+                db.Reviews.Add(review);
+                db.SaveChanges();
+                return CreatedAtRoute("DefaultApi", new { id = review.Id }, review);
+
+            }
+            catch (Exception error)
+            {
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
             }
 
-            applicantLocked.LockedBy = currentUser.UserName;
 
-            db.Reviews.Add(review);
-            db.SaveChanges();
-            return CreatedAtRoute("DefaultApi", new { id = review.Id }, review);
+
         }
 
         // DELETE: api/Reviews/5

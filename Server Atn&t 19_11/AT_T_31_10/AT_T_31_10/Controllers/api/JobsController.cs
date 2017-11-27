@@ -36,7 +36,6 @@ select new
     Position = jb.Position,
     Description = jb.Description,
     Published = jb.Published,
-    Active = jb.Active,
     Experience = jb.Experience
     ,
     Skills =
