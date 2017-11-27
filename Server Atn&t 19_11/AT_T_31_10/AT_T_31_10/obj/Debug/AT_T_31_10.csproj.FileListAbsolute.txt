@@ -428,3 +428,4 @@ C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.dll
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.pdb
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.MatchPrecentage.resources
 C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.WrongProperty.resources
+C:\Users\israe\Desktop\Server\AT_T_31_10\obj\Debug\AT_T_31_10.Migrations.DataPicker.resources

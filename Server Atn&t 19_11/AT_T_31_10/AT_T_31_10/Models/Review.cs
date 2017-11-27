@@ -13,5 +13,6 @@ namespace AT_T_31_10.Models
         public int ManagerId { get; set; }
         public string Status { get; set; }
         public string Content { get; set;}
+        public DateTime InterviewDate { get; set; }
     }
 }

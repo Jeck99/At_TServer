@@ -268,6 +268,10 @@
     <Compile Include="Migrations\201711221822298_WrongProperty.Designer.cs">
       <DependentUpon>201711221822298_WrongProperty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711272006139_DataPicker.cs" />
+    <Compile Include="Migrations\201711272006139_DataPicker.Designer.cs">
+      <DependentUpon>201711272006139_DataPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Applicant.cs" />
     <Compile Include="Models\ApplicantRecruiters.cs" />
     <Compile Include="Models\JobRecruiter.cs" />
@@ -411,6 +415,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711221822298_WrongProperty.resx">
       <DependentUpon>201711221822298_WrongProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711272006139_DataPicker.resx">
+      <DependentUpon>201711272006139_DataPicker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -10,7 +10,7 @@ namespace AT_T_31_10.Models
     {
         public int Id { get; set; }
         [Required]
-        public int Experience { get; set; }
+        public float Experience { get; set; }
         [Required]
         public string Title { get; set; }
         public string Position { get; set; }

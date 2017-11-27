@@ -44,7 +44,6 @@ namespace AT_T_31_10.Controllers.api
                     Active = Applican.Active,
                     Experience = Applican.Experience,
                     Name = Applican.Name,
-                    Status = Applican.Status,
                     Email = Applican.Email,
                     Url = Applican.Url,
                     Phone = Applican.Phone
@@ -81,8 +80,9 @@ namespace AT_T_31_10.Controllers.api
                     {
                         Id = Applican.Id, Title = Applican.Title,
                         LockedBy = Applican.LockedBy,  Date = Applican.Date,
-                        Active = Applican.Active,  Experience = Applican.Experience,
-                        Name = Applican.Name,  Status = Applican.Status,
+                        Active = Applican.Active,
+                        Experience = Applican.Experience,
+                        Name = Applican.Name,
                         Email = Applican.Email, Url = Applican.Url,
                         Phone = Applican.Phone,  Skills = Applican.Skills,
                         MatchPrecentage = (float)Match.GetBestMatchPrecentage(Applican.Id, CurrentUserId),

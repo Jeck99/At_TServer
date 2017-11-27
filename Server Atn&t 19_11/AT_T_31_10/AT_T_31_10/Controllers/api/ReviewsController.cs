@@ -10,63 +10,73 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AT_T_31_10.Models;
+using AT_T_31_10.Utils;
 
 namespace AT_T_31_10.Controllers.api
 {
     public class ReviewsController : ApiController
     {
         private AT_T_31_10Context db = new AT_T_31_10Context();
+        private Security Auth = new Security();
 
-        // GET: api/Reviews
-        public IQueryable<Review> GetReviews()
+        [HttpGet]
+        public IHttpActionResult GetReviews()
         {
-            return db.Reviews;
-        }
-
-        // GET: api/Reviews/5
-        [ResponseType(typeof(Review))]
-        public async Task<IHttpActionResult> GetReview(int id)
-        {
-            Review review = await db.Reviews.FindAsync(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(review);
-        }
-
-        // PUT: api/Reviews/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutReview(int id, Review review)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != review.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(review).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
+                var head = this.Request.Headers.GetValues("UserKey").FirstOrDefault();
+                if (!Auth.AuthSecure(head))
+                    return Content(HttpStatusCode.BadRequest, "UnAuthorized");
+
+               int UserId = Auth.GetId(head);
+
+              var UserReviews = db.Reviews.Where(rev => rev.ManagerId == UserId).Select(R => R.ApplicantId);
+
+                var UserLockedByRecruiter = db.Applicants.Where(App => UserReviews.Contains(App.Id) && App.Active);
+
+                return Ok(UserLockedByRecruiter);
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception error)
             {
-                if (!ReviewExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Content(HttpStatusCode.BadRequest, "UnAuthorized - session couldnt be found ");
             }
+        }
+
+        //[ResponseType(typeof(Review))]
+        //public async Task<IHttpActionResult> GetReview(int id)
+        //{
+        //    Review review = await db.Reviews.FindAsync(id);
+        //    if (review == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(review);
+        //}
+
+        [HttpPut]
+        public IHttpActionResult PutReview(Review review)
+        {
+            var ReviewToSeald =db.Reviews.FirstOrDefault(rev => 
+            rev.ManagerId == review.ManagerId
+            && rev.ApplicantId == review.ApplicantId);
+
+            
+
+                if(ReviewToSeald == null)
+                return NotFound();
+
+
+            ReviewToSeald.Content = review.Content;
+            ReviewToSeald.Status = review.Status;
+
+            if (review.Status == "Fail" || review.Status == "Pass")
+            {
+                var applicantToArchived = db.Applicants.Find(review.ApplicantId);
+                applicantToArchived.Active = false;
+            }
+            db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
         }
