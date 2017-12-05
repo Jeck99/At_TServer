@@ -30,7 +30,7 @@ namespace AT_T_31_10.Controllers.api
 
                int UserId = Auth.GetId(head);
 
-              var UserReviews = db.Reviews.Where(rev => rev.ManagerId == UserId).Select(R => R.ApplicantId);
+              var UserReviews = db.Reviews.Where(rev => rev.ManagerId == UserId && rev.Status=="").Select(R => R.ApplicantId);
 
                 var UserLockedByRecruiter = db.Applicants.Where(App => UserReviews.Contains(App.Id) && App.Active);
 
@@ -61,9 +61,7 @@ namespace AT_T_31_10.Controllers.api
             var ReviewToSeald =db.Reviews.FirstOrDefault(rev => 
             rev.ManagerId == review.ManagerId
             && rev.ApplicantId == review.ApplicantId);
-
-            
-
+     
                 if(ReviewToSeald == null)
                 return NotFound();
 
@@ -92,6 +90,7 @@ namespace AT_T_31_10.Controllers.api
 
                 var currentUser = db.Managers.FirstOrDefault(man => man.Id == review.ManagerId);
                 var applicantLocked = db.Applicants.FirstOrDefault(app => app.Id == review.ApplicantId);
+                review.Status = "";
 
                 if (currentUser == null || applicantLocked == null)
                 {
